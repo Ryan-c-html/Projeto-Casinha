@@ -117,11 +117,6 @@ client.println("<body><h1>Automação Casinha</h1><br>");
 client.println("<h2>Porta Casinha</h2>");
 client.println("<a href='?abrir'><button name=\"porta1\">Abrir</button></a>");
 client.println("<a href='?fechar'><button name=\"porta2\">Fechar</button></a><br>");
-//client.println("<h2>Alarme Casinha</h2>");
-//client.println("<a href='?alarme'><button name=\"alar\">Ligar/Desligar</button></a>");
-//Função que irá dizer para o site se o alarme está ligado ou não
-//if(interru == LOW){client.println("<p><b>Ligado</b></p>");}
-//else{client.println("<p><b>Desligado</b></p>");}
 
 client.println("<h2>Led RGB-Quarto-1</h2>");
 client.println("<a href='?desligar1'><button name=\"1RGB\">Desligar</button></a>");
