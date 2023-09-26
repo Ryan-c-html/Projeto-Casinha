@@ -8,39 +8,38 @@
 </head>
 <body>
     <div class="caixa">
+        <h1>Casinha do Céu</h1>
         <h1>Controle para casa</h1>
-    </div>
-    <div>
         <p><b>Temperatura: </b>24.0 C</p>
         <p><b>Humidade: </b>60.0 %</p>
     </div>
     <div>
         <p><b>Luz Cozinha -</b> Desligada</p>
-        <a href='cozinha'><button name="button">Ligar</button></a>
+        <a href='?cozinha'><button name="button">Ligar</button></a>
     </div>
     <div>
-        <p><b>Luz Sala 1 -</b> Desligada</p>
-        <a href='sala1'><button name="button">Ligar</button></a>
+        <p><b>Luz Sala 1 -</b> Ligada</p>
+        <a href='?sala1'><button name="button" class="desligar">Desligar</button></a>
     </div>
     <div>
         <p><b>Luz Sala 2 -</b> Desligada</p>
-        <a href='sala2'><button name="button">Ligar</button></a>
+        <a href='?sala2'><button name="button">Ligar</button></a>
     </div>
     <div>
         <p><b>Luz Quarto 1 -</b> Desligada</p>
-        <a href='quarto1'><button name="button">Ligar</button></a>
+        <a href='?quarto1'><button name="button">Ligar</button></a>
     </div>
     <div>
         <p><b>Luz Quarto 2 -</b> Desligada</p>
-        <a href='quarto2'><button name="button">Ligar</button></a>
+        <a href='?quarto2'><button name="button">Ligar</button></a>
     </div>
     <div>
         <p><b>Luz Varanda -</b> Desligada</p>
-        <a href='varanda'><button name="button">Ligar</button></a>
+        <a href='?varanda'><button name="button">Ligar</button></a>
     </div>
     <div>
-        <p><b>Porta -</b> Aberta</p>
-        <a href='varanda'><button name="button">Ligar</button></a>
+        <p><b>Porta -</b> Fechada</p>
+        <a href='?porta'><button name="button">Abrir</button></a>
     </div>
     <p></p>
     <style>
@@ -65,6 +64,12 @@
         transition: all 0.5s;
         cursor: pointer;
         margin: 5px;
+        }
+        button:hover{
+            transform: scale(1.05);
+        }
+        .desligar{
+            background-color: rgb(208, 0, 0);
         }
     </style>
 </body>
