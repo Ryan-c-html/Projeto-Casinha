@@ -7,8 +7,8 @@ Data: 26/09/2023
 */
 
 //Incluindo Bibliotecas usadas
-#include <WiFi.h> 
-#include <ESP32Servo.h> 
+#include <WiFi.h> // Biblioteca WiFi para o esp 32
+//#include <>
 #include <DHT.h> 
 
 // Dados para conexão Wi-Fi
@@ -19,7 +19,7 @@ const char* password = "viegas23"; // Inserir senha da rede
 WiFiServer server(80);
 
 //Definição do objeto "motorgaragem" para o servo motor
-Servo motorgaragem;
+//Servo motorgaragem;
 
 DHT dht(5, DHT11);
  
@@ -27,12 +27,12 @@ float t; // Inicia Variáveld e temperatura
 float h; // Inicia variável de umidade
  
 // Define os pinos utilizados pelo ESP32
-const int luzsala    =  4;
-const int luzvaranda = 12;
-const int luzgaragem = 14;
-const int luzcozinha = 15;
-const int luzquarto  = 16;
-const int luzsotao   = 17;
+const int luzCozinha    =  4;
+const int luzSala1 = 12;
+const int luzSala2 = 14;
+const int luzQuarto1 = 15;
+const int luzQuarto2 = 16;
+const int luzVaranda = 17;
 const int servo      = 13;
 const int som        = 23;
 const int pir        = 22;
@@ -50,28 +50,28 @@ Serial.println();
 dht.begin();
 
 // Definindo o pino usado pelo Servo Motor
-motorgaragem.attach(servo);
+//motorgaragem.attach(servo);
 // Posição que o servo motor da garagem irpa iniciar 
-motorgaragem.write(angulo);
+//motorgaragem.write(angulo);
 
 // Define os pinos como saída de sinal
-pinMode(luzcozinha,    OUTPUT);
-pinMode(luzsala,       OUTPUT);
-pinMode(luzgaragem,    OUTPUT);
-pinMode(luzvaranda,    OUTPUT);
-pinMode(luzquarto,     OUTPUT);
-pinMode(luzsotao,      OUTPUT);
-pinMode(som,           OUTPUT);
-pinMode(pir,            INPUT);
+pinMode(luzCozinha,     OUTPUT);
+pinMode(luzSala1,       OUTPUT);
+pinMode(luzSala2,       OUTPUT);
+pinMode(luzQuarto1,     OUTPUT);
+pinMode(luzQuarto2,     OUTPUT);
+pinMode(luzVaranda,     OUTPUT);
+pinMode(som,            OUTPUT);
+pinMode(pir,             INPUT);
  
 // Inicia os pinos em nível baixo (LOW)
-digitalWrite(luzcozinha,  LOW);
-digitalWrite(luzsala,     LOW);
-digitalWrite(luzgaragem,  LOW);
-digitalWrite(luzvaranda,  LOW);
-digitalWrite(luzquarto,   LOW);
-digitalWrite(luzsotao,    LOW);
-digitalWrite(som,         LOW);
+digitalWrite(luzCozinha,     LOW);
+digitalWrite(luzQuarto1,     LOW);
+digitalWrite(luzQuarto2,     LOW);
+digitalWrite(luzSala1,       LOW);
+digitalWrite(luzSala2,       LOW);
+digitalWrite(luzVaranda,     LOW);
+digitalWrite(som,            LOW);
   
 Serial.println();
 Serial.println("Tentando conexão com WiFi");
@@ -101,89 +101,91 @@ Serial.println("Novo cliente se conectou!");
 String header = client.readStringUntil('\r');
 Serial.println(header);
   
-client.println("<!DOCTYPE html><html>");
-client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
-client.println("<link rel=\"icon\" href=\"data:,\">");
-client.println("<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}");
-client.println(".button { background-color: #B84F4F; border: none; color: white; padding: 16px 40px;");
-client.println("text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}");
-client.println(".button2 {background-color: #4CAF50;}</style></head>"); 
-client.println("<body><h1>CONTROLE PARA CASA</h1>");
-client.println("<hr>");
-client.println("<hr>");
-client.println("<h3>Temperatura: " + (String)t + "</h3>");
-client.println("<h3>Umidade: " + (String)h + "</h3>");
-client.println("<hr>");
-client.println("<h3>Luz Cozinha - " + cozinha + "</h3>");
-if (cozinha == "Ligado") {
-client.println("<p><a href=\"/cozinha/desligado\"><button class=\"button\">DESLIGAR</button></a></p>");
-} else {
-client.println("<p><a href=\"/cozinha/ligado\"><button class=\"button button2\">LIGAR</button></a></p>");
+client.println("<!DOCTYPE html><html lang=\"en\">");
+client.println("<head>");
+client.println("<meta charset=\"UTF-8\">");
+client.println("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">");
+client.println("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+client.println("<title>Casa Inteligente</title>");
+client.println("</head><body>");
+client.println("<div class=\"caixa\">");
+client.println("<h1>Casinha do Céu</h1>");
+client.println("<h1>Controle para casa</h1>");
+//Printa a Temperatura e a humidade no site html
+client.println("<p><b>Temperatura: </b>""C</p>");
+client.println(t);
+client.println("C</p>");
+client.println("<p><b>Humidade: </b>");
+client.println(h);
+client.println("%</p>");
+
+client.println("</div>");
+// Funções que irão verificar o estado do Led e mudar o HTML a partir disso - Luz cozinha
+if(digitalRead(luzCozinha) == 0){
+    client.println("<div><p><b>Luz Cozinha -</b> Desligada</p>");
+    client.println("<a href='?cozinha'><button name=\"button\">Ligar</button></a></div>");
 }
-client.println("<hr>");
-client.println("<h3>Luz Sala - " + sala + "</h3>");
-if (sala == "Ligado") {
-client.println("<p><a href=\"/sala/desligado\"><button class=\"button\">DESLIGAR</button></a></p>");
-} else {
-client.println("<p><a href=\"/sala/ligado\"><button class=\"button button2\">LIGAR</button></a></p>");
+if(digitalRead(luzCozinha) == 1){
+    client.println("<div><p><b>Luz Cozinha -</b> Ligada</p>");
+    client.println("<a href='?cozinha'><button name=\"button\"class=\"desligar\">Desligar</button></a></div>");
 }
-client.println("<hr>");
-client.println("<h3>Luz Garagem - " + garagem + "</h3>");
-if (garagem == "Ligado") {
-client.println("<p><a href=\"/garagem/desligado\"><button class=\"button\">DESLIGAR</button></a></p>");
-} else {
-client.println("<p><a href=\"/garagem/ligado\"><button class=\"button button2\">LIGAR</button></a></p>");
+// Funções que irão verificar o estado do Led e mudar o HTML a partir disso - Luz Sala 1
+if(digitalRead(luzSala1) == 0){
+    client.println("<div><p><b>Luz Sala 1 -</b> Desligada</p>");
+    client.println("<a href='?sala1><button name=\"button\">Ligar</button></a></div>");
 }
-client.println("<hr>");
-client.println("<h3>Luz Varanda - " + varanda + "</h3>");
-if (varanda == "Ligado") {
-client.println("<p><a href=\"/varanda/desligado#varanda\" name=\"varanda\"><button class=\"button\">DESLIGAR</button></a></p>");
-} else {
-client.println("<p><a href=\"/varanda/ligado#varanda\" name=\"varanda\"><button class=\"button button2\">LIGAR</button></a></p>");
-} 
-client.println("<hr>");
-client.println("<h3>Luz Quarto - " + quarto + "</h3>");
-if (quarto == "Ligado") {
-client.println("<p><a href=\"/quarto/desligado#quarto\" name=\"quarto\"><button class=\"button\">DESLIGAR</button></a></p>");
-} else {
-client.println("<p><a href=\"/quarto/ligado#quarto\" name=\"quarto\"><button class=\"button button2\">LIGAR</button></a></p>");
+if(digitalRead(luzSala1) == 1){
+    client.println("<div><p><b>Luz Sala 1 -</b> Ligada</p>");
+    client.println("<a href='?sala1'><button name=\"button\"class=\"desligar\">Desligar</button></a></div>");
 }
-client.println("<hr>");
-client.println("<h3>Luz Sotao - " + sotao + "</h3>");
-if (sotao == "Ligado") {
-client.println("<p><a href=\"/sotao/desligado#sotao\" name=\"sotao\"><button class=\"button\">DESLIGAR</button></a></p>");
-} else {
-client.println("<p><a href=\"/sotao/ligado#sotao\" name=\"sotao\"><button class=\"button button2\">LIGAR</button></a></p>");
+// Funções que irão verificar o estado do Led e mudar o HTML a partir disso - Luz Sala 1
+if(digitalRead(luzSala2) == 0){
+    client.println("<div><p><b>Luz Sala 2 -</b> Desligada</p>");
+    client.println("<a href='?sala2><button name=\"button\">Ligar</button></a></div>");
 }
-client.println("<hr>");
-client.println("<h3>Porta Garagem - " + porta + "</h3>");
-if (porta == "Aberta") {
-client.println("<p><a href=\"/porta/fechada#porta\" name=\"porta\"><button class=\"button\">FECHAR</button></a></p>");
-} else {
-client.println("<p><a href=\"/porta/aberta#porta\" name=\"porta\"><button class=\"button button2\">ABRIR</button></a></p>");
+if(digitalRead(luzSala2) == 1){
+    client.println("<div><p><b>Luz Sala 2 -</b> Ligada</p>");
+    client.println("<a href='?sala2'><button name=\"button\"class=\"desligar\">Desligar</button></a></div>");
 }
-client.println("<hr>");
-client.println("<h3>Alarme - " + alarme + "</h3>");
-if (alarme == "Ativado") {
-client.println("<p><a href=\"/alarme/desativado#alarme\" name=\"alarme\"><button class=\"button\">DESATIVAR</button></a></p>");
-} else {
-client.println("<p><a href=\"/alarme/ativado#alarme\" name=\"alarme\"><button class=\"button button2\">ATIVAR</button></a></p>");
-}
-client.println("</body></html>"); 
-client.println();
+
+client.println("");
+client.println("");
+client.println("");
+client.println("");
+client.println("");
+client.println("");
+client.println("");
+client.println("");
+client.println("");
+client.println("");
+client.println("");
+client.println("");
+client.println("");
+client.println("");
+client.println("");
+client.println("");
+
+client.println("<style>");
+client.println("body{background-color: rgb(242, 249, 255);}");
+client.println("div{text-align: center;}");
+client.println("button{display: inline-block;border-radius: 4px;border: none;background-image: url(200w.gif);text-align: center;font-size: 28px;font-family: fantasy, Impact;color:rgb(254, 254, 254);background-color: rgb(1, 232, 28);padding: 20px;width: 200px;transition: all 0.5s;cursor: pointer;margin: 5px;}");
+client.println("button:hover{transform: scale(1.05);}");
+client.println(".desligar{background-color: rgb(208, 0, 0);}");
+client.println("</style>");
+client.println("</body></html>");
 
 client.flush();
 
 
 // Funções que vão mudar o estado do Led
-if(header.indexOf() != -1){digitalWrite(, !digitalRead())}
-if(header.indexOf() != -1){digitalWrite(, !digitalRead())}
-if(header.indexOf() != -1){digitalWrite(, !digitalRead())}
-if(header.indexOf() != -1){digitalWrite(, !digitalRead())}
-if(header.indexOf() != -1){digitalWrite(, !digitalRead())}
-if(header.indexOf() != -1){digitalWrite(, !digitalRead())}
+if(header.indexOf() != -1){digitalWrite(luzCozinha), !digitalRead(luzCozinha)}
+if(header.indexOf() != -1){digitalWrite(luzSala1, !digitalRead(luzSala1))}
+if(header.indexOf() != -1){digitalWrite(luzSala2, !digitalRead(luzSala2))}
+if(header.indexOf() != -1){digitalWrite(luzQuarto1, !digitalRead(luzQuarto1))}
+if(header.indexOf() != -1){digitalWrite(luzQuarto2, !digitalRead(luzQuarto2))}
+if(header.indexOf() != -1){digitalWrite(luzVaranda, !digitalRead(luzvaranda))}
 //Função que vai mudar o angulo do servo
-if(header.indexOf() != -1){
+/*if(header.indexOf() != -1){
     if(angulo == ){
         for(angulo = ; angulo >  ; angulo--){
             servo.write(angulo);
@@ -197,7 +199,7 @@ if(header.indexOf() != -1){
         }
     }
 }
-
+*/
 
 delay(200);
 
