@@ -39,6 +39,9 @@ const int pir        = 22;
 
 //Angulo do Servo Motor
 int angulo = 60;
+
+//Variavel que printa pontinhos enquanto espera a conexão
+int conect = 0;
  
 void setup() {
 // Inicializa o monitor serial na frequencia 115200
@@ -106,6 +109,7 @@ client.println("<head>");
 client.println("<meta charset=\"UTF-8\">");
 client.println("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">");
 client.println("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+client.println("<META HTTP-EQUIV='refresh' CONTENT='5'>");
 client.println("<title>Casa Inteligente</title>");
 client.println("</head><body>");
 client.println("<div class=\"caixa\">");
@@ -132,38 +136,50 @@ if(digitalRead(luzCozinha) == 1){
 // Funções que irão verificar o estado do Led e mudar o HTML a partir disso - Luz Sala 1
 if(digitalRead(luzSala1) == 0){
     client.println("<div><p><b>Luz Sala 1 -</b> Desligada</p>");
-    client.println("<a href='?sala1><button name=\"button\">Ligar</button></a></div>");
+    client.println("<a href='?sala1'><button name=\"button\">Ligar</button></a></div>");
 }
 if(digitalRead(luzSala1) == 1){
     client.println("<div><p><b>Luz Sala 1 -</b> Ligada</p>");
     client.println("<a href='?sala1'><button name=\"button\"class=\"desligar\">Desligar</button></a></div>");
 }
-// Funções que irão verificar o estado do Led e mudar o HTML a partir disso - Luz Sala 1
+// Funções que irão verificar o estado do Led e mudar o HTML a partir disso - Luz Sala 2
 if(digitalRead(luzSala2) == 0){
     client.println("<div><p><b>Luz Sala 2 -</b> Desligada</p>");
-    client.println("<a href='?sala2><button name=\"button\">Ligar</button></a></div>");
+    client.println("<a href='?sala2'><button name=\"button\">Ligar</button></a></div>");
 }
 if(digitalRead(luzSala2) == 1){
     client.println("<div><p><b>Luz Sala 2 -</b> Ligada</p>");
     client.println("<a href='?sala2'><button name=\"button\"class=\"desligar\">Desligar</button></a></div>");
 }
+// Funções que irão verificar o estado do Led e mudar o HTML a partir disso - Luz Quarto 1
+if(digitalRead(luzQuarto1) == 0){
+    client.println("<div><p><b>Luz Quarto 1 -</b> Desligada</p>");
+    client.println("<a href='?quarto1'><button name=\"button\">Ligar</button></a></div>");
+}
+if(digitalRead(luzQuarto1) == 1){
+    client.println("<div><p><b>Luz Quarto 1 -</b> Ligada</p>");
+    client.println("<a href='?quarto1'><button name=\"button\"class=\"desligar\">Desligar</button></a></div>");
+}
+// Funções que irão verificar o estado do Led e mudar o HTML a partir disso - Luz Quarto 2
+if(digitalRead(luzQuarto2) == 0){
+    client.println("<div><p><b>Luz Quarto 2 -</b> Desligada</p>");
+    client.println("<a href='?quarto2'><button name=\"button\">Ligar</button></a></div>");
+}
+if(digitalRead(luzQuarto2) == 1){
+    client.println("<div><p><b>Luz Quarto 2 -</b> Ligada</p>");
+    client.println("<a href='?quarto2'><button name=\"button\"class=\"desligar\">Desligar</button></a></div>");
+}
+// Funções que irão verificar o estado do Led e mudar o HTML a partir disso - Luz Varanda
+if(digitalRead(luzVaranda) == 0){
+    client.println("<div><p><b>Luz Varanda -</b> Desligada</p>");
+    client.println("<a href='?varanda'><button name=\"button\">Ligar</button></a></div>");
+}
+if(digitalRead(luzVaranda) == 1){
+    client.println("<div><p><b>Luz Varanda -</b> Ligada</p>");
+    client.println("<a href='?varanda'><button name=\"button\"class=\"desligar\">Desligar</button></a></div>");
+}
 
-client.println("");
-client.println("");
-client.println("");
-client.println("");
-client.println("");
-client.println("");
-client.println("");
-client.println("");
-client.println("");
-client.println("");
-client.println("");
-client.println("");
-client.println("");
-client.println("");
-client.println("");
-client.println("");
+
 
 client.println("<style>");
 client.println("body{background-color: rgb(242, 249, 255);}");
@@ -178,12 +194,12 @@ client.flush();
 
 
 // Funções que vão mudar o estado do Led
-if(header.indexOf() != -1){digitalWrite(luzCozinha), !digitalRead(luzCozinha)}
-if(header.indexOf() != -1){digitalWrite(luzSala1, !digitalRead(luzSala1))}
-if(header.indexOf() != -1){digitalWrite(luzSala2, !digitalRead(luzSala2))}
-if(header.indexOf() != -1){digitalWrite(luzQuarto1, !digitalRead(luzQuarto1))}
-if(header.indexOf() != -1){digitalWrite(luzQuarto2, !digitalRead(luzQuarto2))}
-if(header.indexOf() != -1){digitalWrite(luzVaranda, !digitalRead(luzvaranda))}
+if(header.indexOf("cozinha") != -1){digitalWrite(luzCozinha, !digitalRead(luzCozinha));}
+if(header.indexOf("sala1") != -1){digitalWrite(luzSala1, !digitalRead(luzSala1));}
+if(header.indexOf("sala2") != -1){digitalWrite(luzSala2, !digitalRead(luzSala2));}
+if(header.indexOf("quarto1") != -1){digitalWrite(luzQuarto1, !digitalRead(luzQuarto1));}
+if(header.indexOf("quarto2") != -1){digitalWrite(luzQuarto2, !digitalRead(luzQuarto2));}
+if(header.indexOf("varanda") != -1){digitalWrite(luzVaranda, !digitalRead(luzVaranda));}
 //Função que vai mudar o angulo do servo
 /*if(header.indexOf() != -1){
     if(angulo == ){
