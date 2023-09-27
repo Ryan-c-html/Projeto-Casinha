@@ -97,7 +97,7 @@ t = dht.readTemperature();
 //Inicia o WiFiClient e avalia se existe um cliente (pessoa) no server
 WiFiClient client = server.available();
 //Verifica se um novo cliente se conectou 
-if (client) {delay(250);return;}
+if (!client) {delay(250);return;}
 Serial.println("Novo cliente se conectou!");
 
 //le o pedido do cliente 
