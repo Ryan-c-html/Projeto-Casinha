@@ -12,8 +12,8 @@ Data: 26/09/2023
 #include <DHT.h> 
 
 // Dados para conexão Wi-Fi
-const char* ssid = "VitoriaViegas"; // Inserir nome da rede
-const char* password = "viegas23"; // Inserir senha da rede
+const char* ssid = "WILL-2G"; // Inserir nome da rede, VitoriaViegas
+const char* password = "27052004"; // Inserir senha da rede, viegas23
 
 //Definindo o server da conexão
 WiFiServer server(80);
@@ -22,10 +22,10 @@ WiFiServer server(80);
 //Servo motorgaragem;
 
 DHT dht(5, DHT11);
- 
+
 float t; // Inicia Variáveld e temperatura
 float h; // Inicia variável de umidade
- 
+
 // Define os pinos utilizados pelo ESP32
 const int luzCozinha    =  4;
 const int luzSala1 = 12;
@@ -42,7 +42,7 @@ int angulo = 60;
 
 //Variavel que printa pontinhos enquanto espera a conexão
 int conect = 0;
- 
+
 void setup() {
 // Inicializa o monitor serial na frequencia 115200
 Serial.begin(115200);
@@ -66,7 +66,7 @@ pinMode(luzQuarto2,     OUTPUT);
 pinMode(luzVaranda,     OUTPUT);
 pinMode(som,            OUTPUT);
 pinMode(pir,             INPUT);
- 
+
 // Inicia os pinos em nível baixo (LOW)
 digitalWrite(luzCozinha,     LOW);
 digitalWrite(luzQuarto1,     LOW);
@@ -75,7 +75,7 @@ digitalWrite(luzSala1,       LOW);
 digitalWrite(luzSala2,       LOW);
 digitalWrite(luzVaranda,     LOW);
 digitalWrite(som,            LOW);
-  
+
 Serial.println();
 Serial.println("Tentando conexão com WiFi");
 initwifi(); // Função que inicia o WiFi
@@ -103,7 +103,7 @@ Serial.println("Novo cliente se conectou!");
 //le o pedido do cliente 
 String header = client.readStringUntil('\r');
 Serial.println(header);
-  
+
 client.println("<!DOCTYPE html><html lang=\"en\">");
 client.println("<head>");
 client.println("<meta charset=\"UTF-8\">");
@@ -232,10 +232,10 @@ void initwifi()
 WiFi.begin(ssid, password);
 WiFi.mode(WIFI_STA);
 while(WiFi.status() != WL_CONNECTED){
- delay(500);
- Serial.print(".");  
- if(conect >= 100){Serial.println(".");}
- conect++;
+    delay(500);
+    Serial.print(".");  
+    if(conect >= 100){Serial.println(".");}
+    conect++;
 }
 Serial.println();
 Serial.println("ESP32 se conectou ao WiFi");
