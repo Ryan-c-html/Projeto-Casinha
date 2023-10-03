@@ -8,12 +8,11 @@ Data: 26/09/2023
 
 //Incluindo Bibliotecas usadas
 #include <WiFi.h> // Biblioteca WiFi para o esp 32
-//#include <>
 #include <DHT.h> 
 
 // Dados para conexão Wi-Fi
-const char* ssid = "WILL-2G"; // Inserir nome da rede, VitoriaViegas
-const char* password = "27052004"; // Inserir senha da rede, viegas23
+const char* ssid = "VitoriaViegas"; // Inserir nome da rede, VitoriaViegas, WILL-2G
+const char* password = "viegas23"; // Inserir senha da rede, viegas23, 27052004
 
 //Definindo o server da conexão
 WiFiServer server(80);
@@ -21,27 +20,29 @@ WiFiServer server(80);
 //Definição do objeto "motorgaragem" para o servo motor
 //Servo motorgaragem;
 
-DHT dht(5, DHT11);
+DHT dht(21, DHT11);
 
 float t; // Inicia Variáveld e temperatura
 float h; // Inicia variável de umidade
 
 // Define os pinos utilizados pelo ESP32
-const int luzCozinha    =  4;
-const int luzSala1 = 12;
-const int luzSala2 = 14;
-const int luzQuarto1 = 15;
-const int luzQuarto2 = 16;
-const int luzVaranda = 17;
-const int servo      = 13;
+const int luzCozinha =  4;
+const int luzSala1   =  2;
+const int luzSala2   = 22;
+// O dht está no pino 21
 const int som        = 23;
 const int pir        = 22;
-
-//Angulo do Servo Motor
-int angulo = 60;
+// Leds que não vão ser usados
+const int luzQuarto1 = 15;
+const int luzQuarto2 = 16;
+const int luzVaranda = 18;
+const int servo      = 13;
 
 //Variavel que printa pontinhos enquanto espera a conexão
 int conect = 0;
+
+//Variavel que armazena o valor que o sensor pir está enviando
+int sinal = 0;
 
 void setup() {
 // Inicializa o monitor serial na frequencia 115200
@@ -94,6 +95,14 @@ void loop() {
 // Leitura do sensor DHT
 h = dht.readHumidity();
 t = dht.readTemperature();
+// Leitura do sensor Pir
+sinal = digitalRead(pir);
+if(sinal == HIGH){
+  digitalWrite(som, HIGH);
+}
+else{
+  digitalWrite(som, LOW);
+}
 //Inicia o WiFiClient e avalia se existe um cliente (pessoa) no server
 WiFiClient client = server.available();
 //Verifica se um novo cliente se conectou 
@@ -109,7 +118,6 @@ client.println("<head>");
 client.println("<meta charset=\"UTF-8\">");
 client.println("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">");
 client.println("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-client.println("<META HTTP-EQUIV='refresh' CONTENT='5'>");
 client.println("<title>Casa Inteligente</title>");
 client.println("</head><body>");
 client.println("<div class=\"caixa\">");
@@ -125,73 +133,44 @@ client.println("%</p>");
 
 client.println("</div>");
 // Funções que irão verificar o estado do Led e mudar o HTML a partir disso - Luz cozinha
-if(digitalRead(luzCozinha) == 0){
-    client.println("<div><p><b>Luz Cozinha -</b> Desligada</p>");
-    client.println("<a href='?cozinha'><button name=\"button\">Ligar</button></a></div>");
-}
-if(digitalRead(luzCozinha) == 1){
-    client.println("<div><p><b>Luz Cozinha -</b> Ligada</p>");
-    client.println("<a href='?cozinha'><button name=\"button\"class=\"desligar\">Desligar</button></a></div>");
-}
+
+client.println("<div><p><b>Luz Cozinha</b></p>");
+client.println("<a href='?cozinha'><button name=\"button\">Ligar</button></a></div>");
+
 // Funções que irão verificar o estado do Led e mudar o HTML a partir disso - Luz Sala 1
-if(digitalRead(luzSala1) == 0){
-    client.println("<div><p><b>Luz Sala 1 -</b> Desligada</p>");
-    client.println("<a href='?sala1'><button name=\"button\">Ligar</button></a></div>");
-}
-if(digitalRead(luzSala1) == 1){
-    client.println("<div><p><b>Luz Sala 1 -</b> Ligada</p>");
-    client.println("<a href='?sala1'><button name=\"button\"class=\"desligar\">Desligar</button></a></div>");
-}
+
+client.println("<div><p><b>Luz Sala 1</b></p>");
+client.println("<a href='?sala1'><button name=\"button\">Ligar</button></a></div>");
+
 // Funções que irão verificar o estado do Led e mudar o HTML a partir disso - Luz Sala 2
-if(digitalRead(luzSala2) == 0){
-    client.println("<div><p><b>Luz Sala 2 -</b> Desligada</p>");
-    client.println("<a href='?sala2'><button name=\"button\">Ligar</button></a></div>");
-}
-if(digitalRead(luzSala2) == 1){
-    client.println("<div><p><b>Luz Sala 2 -</b> Ligada</p>");
-    client.println("<a href='?sala2'><button name=\"button\"class=\"desligar\">Desligar</button></a></div>");
-}
+
+client.println("<div><p><b>Luz Sala 2</b></p>");
+client.println("<a href='?sala2'><button name=\"button\">Ligar</button></a></div>");
+
 // Funções que irão verificar o estado do Led e mudar o HTML a partir disso - Luz Quarto 1
-if(digitalRead(luzQuarto1) == 0){
-    client.println("<div><p><b>Luz Quarto 1 -</b> Desligada</p>");
-    client.println("<a href='?quarto1'><button name=\"button\">Ligar</button></a></div>");
-}
-if(digitalRead(luzQuarto1) == 1){
-    client.println("<div><p><b>Luz Quarto 1 -</b> Ligada</p>");
-    client.println("<a href='?quarto1'><button name=\"button\"class=\"desligar\">Desligar</button></a></div>");
-}
+
+client.println("<div><p><b>Luz Quarto 1</b></p>");
+client.println("<a href='?quarto1'><button name=\"button\">Ligar</button></a></div>");
+
 // Funções que irão verificar o estado do Led e mudar o HTML a partir disso - Luz Quarto 2
-if(digitalRead(luzQuarto2) == 0){
-    client.println("<div><p><b>Luz Quarto 2 -</b> Desligada</p>");
-    client.println("<a href='?quarto2'><button name=\"button\">Ligar</button></a></div>");
-}
-if(digitalRead(luzQuarto2) == 1){
-    client.println("<div><p><b>Luz Quarto 2 -</b> Ligada</p>");
-    client.println("<a href='?quarto2'><button name=\"button\"class=\"desligar\">Desligar</button></a></div>");
-}
+
+client.println("<div><p><b>Luz Quarto 2</b></p>");
+client.println("<a href='?quarto2'><button name=\"button\">Ligar</button></a></div>");
+
 // Funções que irão verificar o estado do Led e mudar o HTML a partir disso - Luz Varanda
-if(digitalRead(luzVaranda) == 0){
-    client.println("<div><p><b>Luz Varanda -</b> Desligada</p>");
-    client.println("<a href='?varanda'><button name=\"button\">Ligar</button></a></div>");
-}
-if(digitalRead(luzVaranda) == 1){
-    client.println("<div><p><b>Luz Varanda -</b> Ligada</p>");
-    client.println("<a href='?varanda'><button name=\"button\"class=\"desligar\">Desligar</button></a></div>");
-}
 
-
-
+client.println("<div><p><b>Luz Varanda</b></p>");
+client.println("<a href='?varanda'><button name=\"button\">Ligar</button></a></div>");
+// Css da página
 client.println("<style>");
 client.println("body{background-color: rgb(242, 249, 255);}");
 client.println("div{text-align: center;}");
-client.println("button{display: inline-block;border-radius: 4px;border: none;background-image: url(200w.gif);text-align: center;font-size: 28px;font-family: fantasy, Impact;color:rgb(254, 254, 254);background-color: rgb(1, 232, 28);padding: 20px;width: 200px;transition: all 0.5s;cursor: pointer;margin: 5px;}");
+client.println("button{display: inline-block;border-radius: 4px;border: none;text-align: center;font-size: 28px;font-family: fantasy, Impact;color:rgb(254, 254, 254);background-color: rgb(0, 75, 205);padding: 20px;width: 200px;transition: all 0.5s;cursor: pointer;margin: 5px;}");
 client.println("button:hover{transform: scale(1.05);}");
-client.println(".desligar{background-color: rgb(208, 0, 0);}");
 client.println("</style>");
 client.println("</body></html>");
 
 client.flush();
-
 
 // Funções que vão mudar o estado do Led
 if(header.indexOf("cozinha") != -1){digitalWrite(luzCozinha, !digitalRead(luzCozinha));}
@@ -200,22 +179,6 @@ if(header.indexOf("sala2") != -1){digitalWrite(luzSala2, !digitalRead(luzSala2))
 if(header.indexOf("quarto1") != -1){digitalWrite(luzQuarto1, !digitalRead(luzQuarto1));}
 if(header.indexOf("quarto2") != -1){digitalWrite(luzQuarto2, !digitalRead(luzQuarto2));}
 if(header.indexOf("varanda") != -1){digitalWrite(luzVaranda, !digitalRead(luzVaranda));}
-//Função que vai mudar o angulo do servo
-/*if(header.indexOf() != -1){
-    if(angulo == ){
-        for(angulo = ; angulo >  ; angulo--){
-            servo.write(angulo);
-            delay(5);
-        }
-    }
-    if(angulo == ){
-        for(angulo = ; angulo <  ; angulo++){
-            servo.write(angulo);
-            delay(5);
-        }
-    }
-}
-*/
 
 delay(200);
 
@@ -225,7 +188,6 @@ Serial.println("Cliente desconectado");
 Serial.println();
 Serial.println();
 }
-
 // Função que irá iniciar o WiFi do Esp 32
 void initwifi()
 {
